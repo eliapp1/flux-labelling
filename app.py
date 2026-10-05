@@ -212,73 +212,119 @@ for col, field in zip(context_cols, CONTEXT_COLS):
 
 st.divider()
 
-# ---------------------------------------------------------------------------
-# Step 2 - CO2
-# ---------------------------------------------------------------------------
-st.header("Step 2 - CO2")
+st.header("Gas Fits")
 
-fig_co2 = go.Figure()
-fig_co2.add_trace(line_trace(plot_df["t"], plot_df["chi_co2"], "chi_co2 (raw)", "blue"))
-fig_co2.add_trace(
-    line_trace(plot_df["t"], plot_df["chi_pred_co2"], "chi_pred_co2 (fit)", "red", dash="dash")
-)
-fig_co2.update_layout(
-    xaxis_title="t (s)", yaxis_title="chi_co2", height=400, legend=dict(orientation="h")
-)
-st.plotly_chart(fig_co2, width='stretch')
-
-co2_metric_cols = st.columns(5)
-co2_metric_cols[0].metric("f_co2", f"{first_row['f_co2']:.4g}")
-co2_metric_cols[1].metric("r2_f_co2", f"{first_row['r2_f_co2']:.4g}")
-co2_metric_cols[2].metric("rmse_f_co2", f"{first_row['rmse_f_co2']:.4g}")
-co2_metric_cols[3].metric("sigma_f_co2", f"{first_row['sigma_f_co2']:.4g}")
-co2_metric_cols[4].metric("linear", str(first_row["linear"]))
-
-st.divider()
+co2_col, n2o_col, ch4_col = st.columns(3)
 
 # ---------------------------------------------------------------------------
-# Step 3 - Additional gases
+# CO2
 # ---------------------------------------------------------------------------
-st.header("Step 3 - Additional gases")
+with co2_col:
+    fig_co2 = go.Figure()
 
-gas_col1, gas_col2 = st.columns(2)
+    fig_co2.add_trace(
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_co2"],
+            mode="markers",
+            name="chi_co2 (raw)",
+            marker=dict(color="blue", size=6),
+        )
+    )
 
-with gas_col1:
+    fig_co2.add_trace(
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_pred_co2"],
+            mode="lines",
+            name="chi_pred_co2 (fit)",
+            line=dict(color="red", dash="dash"),
+        )
+    )
+
+    fig_co2.update_layout(
+        title="CO2",
+        xaxis_title="t (s)",
+        yaxis_title="chi_co2",
+        height=350,
+        legend=dict(orientation="h"),
+    )
+
+    st.plotly_chart(fig_co2, width="stretch")
+
+
+# ---------------------------------------------------------------------------
+# N2O
+# ---------------------------------------------------------------------------
+with n2o_col:
     fig_n2o = go.Figure()
-    fig_n2o.add_trace(line_trace(plot_df["t"], plot_df["chi_n2o"], "chi_n2o (raw)", "green"))
+
     fig_n2o.add_trace(
-        line_trace(plot_df["t"], plot_df["chi_pred_n2o"], "chi_pred_n2o (fit)", "green", dash="dash")
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_n2o"],
+            mode="markers",
+            name="chi_n2o (raw)",
+            marker=dict(color="green", size=6),
+        )
     )
+
+    fig_n2o.add_trace(
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_pred_n2o"],
+            mode="lines",
+            name="chi_pred_n2o (fit)",
+            line=dict(color="green", dash="dash"),
+        )
+    )
+
     fig_n2o.update_layout(
-        xaxis_title="t (s)", yaxis_title="chi_n2o", height=350, legend=dict(orientation="h")
+        title="N2O",
+        xaxis_title="t (s)",
+        yaxis_title="chi_n2o",
+        height=350,
+        legend=dict(orientation="h"),
     )
-    st.plotly_chart(fig_n2o, width='stretch')
 
-    n2o_metric_cols = st.columns(4)
-    n2o_metric_cols[0].metric("f_n2o", f"{first_row['f_n2o']:.4g}")
-    n2o_metric_cols[1].metric("r2_f_n2o", f"{first_row['r2_f_n2o']:.4g}")
-    n2o_metric_cols[2].metric("rmse_f_n2o", f"{first_row['rmse_f_n2o']:.4g}")
-    n2o_metric_cols[3].metric("sigma_f_n2o", f"{first_row['sigma_f_n2o']:.4g}")
+    st.plotly_chart(fig_n2o, width="stretch")
 
-with gas_col2:
+
+# ---------------------------------------------------------------------------
+# CH4
+# ---------------------------------------------------------------------------
+with ch4_col:
     fig_ch4 = go.Figure()
-    fig_ch4.add_trace(line_trace(plot_df["t"], plot_df["chi_ch4"], "chi_ch4 (raw)", "orange"))
+
     fig_ch4.add_trace(
-        line_trace(plot_df["t"], plot_df["chi_pred_ch4"], "chi_pred_ch4 (fit)", "orange", dash="dash")
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_ch4"],
+            mode="markers",
+            name="chi_ch4 (raw)",
+            marker=dict(color="orange", size=6),
+        )
     )
+
+    fig_ch4.add_trace(
+        go.Scatter(
+            x=plot_df["t"],
+            y=plot_df["chi_pred_ch4"],
+            mode="lines",
+            name="chi_pred_ch4 (fit)",
+            line=dict(color="orange", dash="dash"),
+        )
+    )
+
     fig_ch4.update_layout(
-        xaxis_title="t (s)", yaxis_title="chi_ch4", height=350, legend=dict(orientation="h")
+        title="CH4",
+        xaxis_title="t (s)",
+        yaxis_title="chi_ch4",
+        height=350,
+        legend=dict(orientation="h"),
     )
-    st.plotly_chart(fig_ch4, width='stretch')
 
-    ch4_metric_cols = st.columns(4)
-    ch4_metric_cols[0].metric("f_ch4", f"{first_row['f_ch4']:.4g}")
-    ch4_metric_cols[1].metric("r2_f_ch4", f"{first_row['r2_f_ch4']:.4g}")
-    ch4_metric_cols[2].metric("rmse_f_ch4", f"{first_row['rmse_f_ch4']:.4g}")
-    ch4_metric_cols[3].metric("sigma_f_ch4", f"{first_row['sigma_f_ch4']:.4g}")
-
-st.divider()
-
+    st.plotly_chart(fig_ch4, width="stretch")
 # ---------------------------------------------------------------------------
 # Step 4 - Chamber conditions
 # ---------------------------------------------------------------------------
