@@ -193,32 +193,51 @@ plot_df = group[group["exclude"] == False]  # noqa: E712
 
 CONTEXT_COL_WIDTHS = {
     "mmnt_id": 2.2,
-    "datect": 1,
+    "date": 1,
+    "time":1,
     "soil": 1,
     "vegetation": 1,
     "chamber": 1.2,
-    "PPFD_IN_ch": 1.3,
+    "light": 1,
     "VWC": 1,
 }
 
-context_fields = [c for c in CONTEXT_COLS if c != "light"]
+# context_fields = [c for c in CONTEXT_COLS if c != "light"]
+
+context_fields = [
+    "mmnt_id",
+    "date",
+    "time",
+    "soil",
+    "vegetation",
+    "chamber",
+    "light",
+    "VWC",
+]
 
 context_cols = st.columns([CONTEXT_COL_WIDTHS[c] for c in context_fields])
 
 for col, field in zip(context_cols, context_fields):
-    value = first_row[field]
 
-    if field == "datect":
-        value = pd.to_datetime(value).strftime("%B")  # e.g. "January"
-        label = "Month"
+    if field == "date":
+        value = pd.to_datetime(first_row["datect"]).strftime("%d-%B")
+        label = "Date"
 
-    elif field == "PPFD_IN_ch":
-      value = f"{value:.0f}" # 2630
-    
-    elif isinstance(value, float):
-      value = f"{value:.3g}"
+    elif field == "time":
+        value = pd.to_datetime(first_row["datect"]).strftime("%H:%M")
+        label = "Time"
 
-    col.markdown(f"**{field}**")
+    else:
+        value = first_row[field]
+        label = field
+
+        if field == "PPFD_IN_ch":
+            value = f"{value:.0f}"
+
+        elif isinstance(value, float):
+            value = f"{value:.3g}"
+
+    col.markdown(f"**{label}**")
     col.markdown(
         f"<div style='word-break:break-word; white-space:normal; font-size:0.95rem;'>{value}</div>",
         unsafe_allow_html=True,
@@ -341,7 +360,7 @@ with n2o_col:
 # ===========================================================================
 # Row 2: H2O and Chamber Conditions
 # ===========================================================================
-_, h2o_col, chamber_col = st.columns([0.3, 1, 1.8])
+_, h2o_col, chamber_col, _ = st.columns([0.5, 1, 1, 0.5 ])
 
 # ---------------------------------------------------------------------------
 # H2O
